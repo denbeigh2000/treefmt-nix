@@ -8,8 +8,19 @@ let
   formatOptions = char: opts: builtins.map (opt: formatOption char opt) opts;
 in
 {
+  meta.maintainers = [ ];
+
   options.programs.clippy = {
     enable = lib.mkEnableOption "clippy";
+
+    package = mkOption {
+      type = types.package;
+      default = pkgs.clippy;
+      description = ''
+        Clippy package to use for this check.
+      '';
+    };
+
 
     allow = mkOption {
       type = types.listOf types.str;
@@ -35,11 +46,11 @@ in
       '';
     };
 
-    package = mkOption {
-      type = types.package;
-      default = pkgs.clippy;
+    edition = mkOption {
+      type = types.str;
+      default = "2021";
       description = ''
-        Clippy package to use for this check.
+        Rust edition to target when formatting.
       '';
     };
   };
@@ -48,10 +59,10 @@ in
     settings.formatter.clippy = {
       command = "${cfg.package}/bin/clippy-driver";
       options =
-        formatOptions "A" cfg.allow +
-        formatOptions "W" cfg.warn +
-        formatOptions "D" cfg.deny +
-        [ "--fix" ];
+        formatOptions "A" cfg.allow ++
+        formatOptions "W" cfg.warn ++
+        formatOptions "D" cfg.deny ++
+        [ "--edition" cfg.edition "--fix" ];
       includes = [ "*.rs" ];
     };
   };
