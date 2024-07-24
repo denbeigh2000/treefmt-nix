@@ -62,7 +62,7 @@ in
         formatOptions "A" cfg.allow ++
         formatOptions "W" cfg.warn ++
         formatOptions "D" cfg.deny ++
-        [ "--edition" cfg.edition "--fix" ];
+        [ "--edition" cfg.edition ];
       includes = [ "*.rs" ];
     };
   };
